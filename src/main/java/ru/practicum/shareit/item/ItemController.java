@@ -19,7 +19,7 @@ public class ItemController {
     @PostMapping
     public Item createItem(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") Long userId,
                            @RequestBody Item item) {
-        log.info("Получен запрос на создание товара.");
+        log.info("Получен запрос на создание товара: {}", item);
         return itemService.createItem(userId, item);
     }
 
@@ -27,14 +27,14 @@ public class ItemController {
     public Item updateItem(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") Long userId,
                            @RequestBody Item item,
                            @PathVariable("itemId") Long itemId) {
-        log.info("Получен запрос на обновление товара.");
+        log.info("Получен запрос на обновление товара: {}", item);
         return itemService.updateItem(userId, item, itemId);
     }
 
     @GetMapping("/{itemId}")
     public Item getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                         @PathVariable("itemId") Long itemId) {
-        log.info("Получен запрос на получение товара.");
+        log.info("Получен запрос на получение товара: {}", itemId);
         return itemService.getItem(userId, itemId);
     }
 
@@ -47,7 +47,7 @@ public class ItemController {
     @GetMapping("/search")
     public List<Item> getItemSearch(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestParam("text") String text) {
-        log.info("Получен запрос на получение товара по поиску.");
+        log.info("Получен запрос на получение товара по поиску: {}", text);
         return itemService.getItemSearch(userId, text);
     }
 }

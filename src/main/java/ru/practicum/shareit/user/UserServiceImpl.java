@@ -1,7 +1,9 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.DuplicateException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 
 import java.util.ArrayList;
@@ -51,8 +53,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        users.remove(userId);
+    public HttpStatus deleteUser(Long userId) {
+        if (users.get(userId) != null) {
+            users.remove(userId);
+        } else {
+            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
+        }
+        return HttpStatus.OK;
     }
 
     private void validationCheck(User user) {

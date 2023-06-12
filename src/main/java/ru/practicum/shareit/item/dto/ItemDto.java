@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
+import ru.practicum.shareit.item.model.Item;
+
 public class ItemDto {
 
     private String name;
@@ -14,4 +16,6 @@ public class ItemDto {
         this.aLong = aLong;
     }
 
+    public ItemDto(Item build) {
+    }
 }

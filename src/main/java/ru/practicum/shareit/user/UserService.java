@@ -1,5 +1,7 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.http.HttpStatus;
+
 import java.util.List;
 
 public interface UserService {
@@ -11,5 +13,5 @@ public interface UserService {
 
     User patchUser(User user, Long userId);
 
-    void deleteUser(Long userId);
+    HttpStatus deleteUser(Long userId);
 }
