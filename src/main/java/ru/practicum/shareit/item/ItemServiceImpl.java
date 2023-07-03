@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
-@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository repository;
