@@ -1,61 +1,66 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Optional;
 import java.util.List;
-import java.util.Map;
 
-@Repository
+@Service
 public class UserServiceImpl implements UserService {
 
-    Map<Long, User> users = new HashMap<>();
+    private final UserRepository repository;
 
-    private long generatorId = 0;
+    public UserServiceImpl(UserRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public User getUser(Long userId) {
-        return users.get(userId);
+        Optional<User> user = repository.findById(userId);
+        if (user.isEmpty()) {
+            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
+        }
+        return user.get();
     }
 
     @Override
     public List<User> getUsers() {
-        return new ArrayList<>(users.values());
+        return repository.findAll();
     }
 
     @Override
     public User createUser(User user) {
         validationCheck(user);
-        generatorId++;
-        user.setId(generatorId);
-        users.put(user.getId(), user);
-        return user;
+        return repository.save(user);
     }
 
     @Override
     public User patchUser(User user, Long userId) {
         validationCheckPatch(user, userId);
-        User userOld = users.get(userId);
-        user.setId(userId);
-        if (user.toString().contains("email=null")) {
-            user.setEmail(userOld.getEmail());
+        Optional<User> userOld = repository.findById(userId);
+        if (userOld.isPresent()) {
+            user.setId(userId);
+            if (user.toString().contains("email=null")) {
+                user.setEmail(userOld.get().getEmail());
+            }
+            if (user.toString().contains("name=null")) {
+                user.setName(userOld.get().getName());
+            }
+        } else {
+            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
         }
-        if (user.toString().contains("name=null")) {
-            user.setName(userOld.getName());
-        }
-        users.put(userId, user);
-        return users.get(user.getId());
+        return repository.save(user);
     }
 
     @Override
     public HttpStatus deleteUser(Long userId) {
-        if (users.get(userId) != null) {
-            users.remove(userId);
+        Optional<User> user = repository.findById(userId);
+        if (user.isPresent()) {
+            repository.deleteById(userId);
         } else {
             throw new NotFoundException("Пользователь с id " + userId + " не найден.");
         }
@@ -66,24 +71,12 @@ public class UserServiceImpl implements UserService {
         if (user.toString().contains("email=null") || !user.getEmail().contains("@")) {
             throw new ValidationException("Почта должна содержать символ '@' или быть не пустой.");
         }
-        for (User user1 : users.values()) {
-            if (user.getEmail().equals(user1.getEmail())) {
-                throw new DuplicateException("На почту с названием " + user.getEmail() + " " +
-                        "уже зарегестрирован пользователь.");
-            }
-        }
     }
 
     private void validationCheckPatch(User user, Long userId) {
-        if (user.getEmail() != null) {
-            boolean duplicateExists = users.values()
-                    .stream()
-                    .anyMatch(u -> u.getEmail() != null && u.getEmail().equals(user.getEmail()) && u.getId() != userId);
-
-            if (duplicateExists) {
-                throw new DuplicateException("На почту с названием " + user.getEmail() + " " +
-                        "уже зарегистрирован пользователь.");
-            }
+        List<User> usersDuplicateEmail = repository.findByEmailContainingIgnoreCaseAndIdNot(user.getEmail(), userId);
+        if (!usersDuplicateEmail.isEmpty()) {
+            throw new DuplicateException("Пользователь с почтой " + user.getEmail() + " уже существует.");
         }
     }
 }

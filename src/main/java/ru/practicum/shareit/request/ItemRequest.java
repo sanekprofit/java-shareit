@@ -3,12 +3,19 @@ package ru.practicum.shareit.request;
 import lombok.Data;
 import ru.practicum.shareit.user.User;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.time.Instant;
 
 @Data
+@Entity
+@Table(name = "requests")
 public class ItemRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String description;
-    private User user;
-    private LocalDateTime created;
+    @OneToOne
+    @JoinColumn(name = "requester_id", nullable = false)
+    private User requester;
+    private Instant created;
 }
