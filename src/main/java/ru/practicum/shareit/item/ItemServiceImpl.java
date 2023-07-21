@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -9,6 +10,8 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
@@ -21,25 +24,32 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
 
     public ItemServiceImpl(ItemRepository repository,
                            UserService userService,
                            BookingRepository bookingRepository,
-                           CommentRepository commentRepository) {
+                           CommentRepository commentRepository, ItemRequestRepository requestRepository) {
         this.repository = repository;
         this.userService = userService;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.requestRepository = requestRepository;
     }
 
     @Override
-    public Item createItem(Long userId, Item item) {
-        validationCheck(userId, item);
+    public ItemShort createItem(Long userId, ItemShort itemShort) {
+        validationCheck(userId, itemShort);
         if (userService.getUser(userId) == null) {
             throw new NotFoundException("Пользователя с id " + userId + " не существует.");
         }
+        Item item = ItemMapper.toItem(itemShort);
         item.setOwner(userService.getUser(userId));
-        return repository.save(item);
+        ItemRequest itemRequest = requestRepository.findFirstById(itemShort.getRequestId());
+        item.setRequest(itemRequest);
+        repository.save(item);
+        itemShort.setId(item.getId());
+        return itemShort;
     }
 
     @Override
@@ -128,7 +138,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItems(Long userId) {
+    public List<ItemDto> getItems(Long userId, Integer from, Integer size) {
+        if (from < 0) {
+            throw new ValidationException("Параметр from не может быть " + from);
+        }
+        if (size <= 0) {
+            throw new ValidationException("Параметр size не может быть " + size);
+        }
+        int fromPage = from / size;
+        PageRequest pageRequest = PageRequest.of(fromPage, size);
         List<ItemDto> itemDtoList = new ArrayList<>();
         List<List<CommentDto>> commentDto = new ArrayList<>();
         List<List<Comment>> comments = commentRepository.findAllByItem_Owner_Id(userId);
@@ -155,7 +173,7 @@ public class ItemServiceImpl implements ItemService {
                 for (Booking bookingNext : bookingsNextList) {
                     for (Booking bookingLast : bookingsLastList) {
                         itemDtoList.add(ItemMapper.toItemDto(bookingNext, bookingLast, null));
-                        for (Item item : repository.findAllByOwner_Id(userId)) {
+                        for (Item item : repository.findAllByOwner_Id(userId, pageRequest)) {
                             if (item.getId() != (bookingLast.getItem().getId() & bookingNext.getItem().getId()))
                                 itemDtoList.add(ItemMapper.toItemDto(item, null));
                         }
@@ -166,7 +184,7 @@ public class ItemServiceImpl implements ItemService {
                     for (Booking bookingLast : bookingsLastList) {
                         for (List<CommentDto> comments1 : commentDto) {
                             itemDtoList.add(ItemMapper.toItemDto(bookingNext, bookingLast, comments1));
-                            for (Item item : repository.findAllByOwner_Id(userId)) {
+                            for (Item item : repository.findAllByOwner_Id(userId, pageRequest)) {
                                 if (item.getId() != (bookingLast.getItem().getId() & bookingNext.getItem().getId()))
                                     itemDtoList.add(ItemMapper.toItemDto(item, comments1));
                             }
@@ -177,12 +195,12 @@ public class ItemServiceImpl implements ItemService {
             return itemDtoList;
         } else {
             if (comments.isEmpty()) {
-                for (Item item : repository.findAllByOwner_Id(userId)) {
+                for (Item item : repository.findAllByOwner_Id(userId, pageRequest)) {
                     itemDtoList.add(ItemMapper.toItemDto(item, null));
                 }
             } else {
                 for (List<CommentDto> comments1 : commentDto) {
-                    for (Item item : repository.findAllByOwner_Id(userId)) {
+                    for (Item item : repository.findAllByOwner_Id(userId, pageRequest)) {
                         itemDtoList.add(ItemMapper.toItemDto(item, comments1));
                     }
                 }
@@ -192,19 +210,27 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getItemSearch(Long userId, String text) {
+    public List<Item> getItemSearch(Long userId, String text, Integer from, Integer size) {
+        if (from < 0) {
+            throw new ValidationException("Параметр from не может быть " + from);
+        }
+        if (size <= 0) {
+            throw new ValidationException("Параметр size не может быть " + size);
+        }
+        int fromPage = from / size;
+        PageRequest pageRequest = PageRequest.of(fromPage, size);
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return repository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text);
+        return repository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text, pageRequest);
     }
 
-    private void validationCheck(Long userId, Item item) {
-        if (item.toString().contains("description=null") || item.toString().contains("name=null") ||
-        item.getName().isBlank()) {
+    private void validationCheck(Long userId, ItemShort itemShort) {
+        if (itemShort.toString().contains("description=null") || itemShort.toString().contains("name=null") ||
+        itemShort.getName().isBlank()) {
             throw new ValidationException("Описание товара или название не может быть пустым.");
         }
-        if (item.toString().contains("available=null")) {
+        if (itemShort.toString().contains("available=null")) {
             throw new ValidationException("Поле available обязательно.");
         }
         if (userId == 0) {

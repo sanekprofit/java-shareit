@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -63,28 +64,36 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getBookings(Long userId, String state) {
+    public List<Booking> getBookings(Long userId, String state, Integer from, Integer size) {
+        if (from < 0) {
+            throw new ValidationException("Параметр from не может быть " + from);
+        }
+        if (size <= 0) {
+            throw new ValidationException("Параметр size не может быть " + size);
+        }
         checkUser(userId);
         List<Booking> bookings;
+        int fromPage = from / size;
+        PageRequest pageRequest = PageRequest.of(fromPage, size);
         switch (state) {
             case "ALL":
-                bookings = repository.findAllByBooker_IdOrderByStartDesc(userId);
+                bookings = repository.findAllByBooker_IdOrderByStartDesc(userId, pageRequest);
                 break;
             case "CURRENT":
                 bookings = repository.findAllByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId,
-                        LocalDateTime.now(), LocalDateTime.now());
+                        LocalDateTime.now(), LocalDateTime.now(), pageRequest);
                 break;
             case "FUTURE":
-                bookings = repository.findAllByBooker_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = repository.findAllByBooker_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(), pageRequest);
                 break;
             case "PAST":
-                bookings = repository.findAllByBooker_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = repository.findAllByBooker_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(), pageRequest);
                 break;
             case "WAITING":
-                bookings = repository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+                bookings = repository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, pageRequest);
                 break;
             case "REJECTED":
-                bookings = repository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+                bookings = repository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageRequest);
                 break;
             default:
                 throw new ValidationException("Unknown state: " + state);
@@ -93,28 +102,36 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getBookingsOwner(Long userId, String state) {
+    public List<Booking> getBookingsOwner(Long userId, String state, Integer from, Integer size) {
+        if (from < 0) {
+            throw new ValidationException("Параметр from не может быть " + from);
+        }
+        if (size <= 0) {
+            throw new ValidationException("Параметр size не может быть " + size);
+        }
         checkUser(userId);
         List<Booking> bookings;
+        int fromPage = from / size;
+        PageRequest pageRequest = PageRequest.of(fromPage, size);
         switch (state) {
             case "ALL":
-                bookings = repository.findAllByItem_Owner_IdOrderByStartDesc(userId);
+                bookings = repository.findAllByItem_Owner_IdOrderByStartDesc(userId, pageRequest);
                 break;
             case "CURRENT":
                 bookings = repository.findAllByItem_Owner_IdAndStartBeforeAndEndAfterOrderByStartDesc(
-                        userId, LocalDateTime.now(), LocalDateTime.now());
+                        userId, LocalDateTime.now(), LocalDateTime.now(), pageRequest);
                 break;
             case "FUTURE":
-                bookings = repository.findAllByItem_Owner_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = repository.findAllByItem_Owner_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(), pageRequest);
                 break;
             case "PAST":
-                bookings = repository.findAllByItem_Owner_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = repository.findAllByItem_Owner_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(), pageRequest);
                 break;
             case "WAITING":
-                bookings = repository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+                bookings = repository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, pageRequest);
                 break;
             case "REJECTED":
-                bookings = repository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+                bookings = repository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageRequest);
                 break;
             default:
                 throw new ValidationException("Unknown state: " + state);

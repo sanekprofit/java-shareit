@@ -22,4 +22,8 @@ public class ItemMapper {
     public static ItemDto toItemDto(Booking bookingLast, List<CommentDto> comments) {
         return new ItemDto(bookingLast, comments);
     }
+
+    public static Item toItem(ItemShort itemShort) {
+        return new Item(itemShort.getName(), itemShort.getDescription(), itemShort.getAvailable());
+    }
 }

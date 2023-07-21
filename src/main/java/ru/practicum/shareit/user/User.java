@@ -20,4 +20,9 @@ public class User {
     private String name;
     @Column(length = 512, unique = true)
     private String email;
+
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 }

@@ -66,6 +66,12 @@ public class ItemDto {
         this.comments = comments;
     }
 
+    public ItemDto(String name, String description, Boolean available) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
+
     @Data
     public static class BookingDto {
         Long id;

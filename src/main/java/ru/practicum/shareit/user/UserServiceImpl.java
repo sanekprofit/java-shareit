@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.Optional;
 import java.util.List;
@@ -33,8 +35,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-        validationCheck(user);
+    public User createUser(UserDto userDto) {
+        validationCheck(userDto);
+        User user = UserMapper.toUser(userDto);
         return repository.save(user);
     }
 
@@ -67,8 +70,8 @@ public class UserServiceImpl implements UserService {
         return HttpStatus.OK;
     }
 
-    private void validationCheck(User user) {
-        if (user.toString().contains("email=null") || !user.getEmail().contains("@")) {
+    private void validationCheck(UserDto userDto) {
+        if (userDto.toString().contains("email=null") || !userDto.getEmail().contains("@")) {
             throw new ValidationException("Почта должна содержать символ '@' или быть не пустой.");
         }
     }

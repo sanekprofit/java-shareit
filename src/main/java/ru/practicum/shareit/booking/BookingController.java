@@ -47,17 +47,21 @@ public class BookingController {
     public List<Booking> getBookings(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0")
                                          Long userId,
                                      @RequestParam(name = "state", required = false, defaultValue = "ALL")
-                                     String state) {
+                                     String state,
+                                     @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                     @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
         log.info("Получен запрос на получение списка аренд пользователя с id " + userId + ", State: " + state);
-        return bookingService.getBookings(userId, state);
+        return bookingService.getBookings(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<Booking> getBookingsOwner(@RequestHeader(
             value = "X-Sharer-User-Id", required = false, defaultValue = "0") Long userId,
                                           @RequestParam(name = "state", required = false, defaultValue = "ALL")
-                                          String state) {
+                                          String state,
+                                          @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                          @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
         log.info("Получен запрос на получение списка аренд владельца с id " + userId + ", State: " + state);
-        return bookingService.getBookingsOwner(userId, state);
+        return bookingService.getBookingsOwner(userId, state, from, size);
     }
 }
