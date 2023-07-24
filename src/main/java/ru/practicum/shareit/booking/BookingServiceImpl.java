@@ -29,7 +29,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking createBooking(BookingDto bookingDto, Long userId) {
         userService.getUser(userId);
         if (bookingDto.getItemId() == userId) {
-            throw new NotFoundException("Нельзя взять в аренду свой же предмет.");
+            throw new NotFoundException(String.format("Нельзя взять в аренду свой же предмет. userId: %d", userId));
         }
         Booking booking = toBooking(bookingDto, userId);
         validationCheck(booking);
@@ -39,11 +39,11 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking updateBookingStatus(Long userId, Long bookingId, Boolean approved) {
         if (repository.findById(bookingId).isEmpty()) {
-            throw new NotFoundException("Бронирования с id " + bookingId + " не существует.");
+            throw new NotFoundException(String.format("Бронирования с id %d не существует.", bookingId));
         }
         Booking booking = repository.findById(bookingId).get();
         if (booking.getItem().getOwner().getId() != userId) {
-            throw new NotFoundException("Пользователь с id " + userId + " не является владельцем этой вещи.");
+            throw new NotFoundException(String.format("Пользователь с id %d не является владельцем этой вещи.", userId));
         }
         if (booking.getStatus().equals(BookingStatus.APPROVED)) {
             throw new ValidationException("Статус уже подтверждён.");
@@ -66,10 +66,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getBookings(Long userId, String state, Integer from, Integer size) {
         if (from < 0) {
-            throw new ValidationException("Параметр from не может быть " + from);
+            throw new ValidationException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new ValidationException("Параметр size не может быть " + size);
+            throw new ValidationException(String.format("Параметр size не может быть %d", from));
         }
         userService.getUser(userId);
         List<Booking> bookings;
@@ -96,7 +96,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = repository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageRequest);
                 break;
             default:
-                throw new ValidationException("Unknown state: " + state);
+                throw new ValidationException(String.format("Unknown state: %s", state));
         }
         return bookings;
     }
@@ -104,10 +104,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getBookingsOwner(Long userId, String state, Integer from, Integer size) {
         if (from < 0) {
-            throw new ValidationException("Параметр from не может быть " + from);
+            throw new ValidationException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new ValidationException("Параметр size не может быть " + size);
+            throw new ValidationException(String.format("Параметр size не может быть %d", from));
         }
         userService.getUser(userId);
         List<Booking> bookings;
@@ -134,7 +134,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = repository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageRequest);
                 break;
             default:
-                throw new ValidationException("Unknown state: " + state);
+                throw new ValidationException(String.format("Unknown state: %s", state));
         }
         return bookings;
     }
@@ -155,17 +155,17 @@ public class BookingServiceImpl implements BookingService {
 
     private void bookingUserCheck(Long userId, Long bookingId) {
         if (repository.findById(bookingId).isEmpty()) {
-            throw new NotFoundException("Бронирования с id " + bookingId + " не существует.");
+            throw new NotFoundException(String.format("Бронирования с id %d не существует.", bookingId));
         }
         Booking booking = repository.findById(bookingId).get();
         if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
-            throw new NotFoundException("Неправильный id пользователя: " + userId);
+            throw new NotFoundException(String.format("Неправильный id пользователя: %d", userId));
         }
     }
 
     private Booking toBooking(BookingDto bookingDto, Long userId) {
         if (itemRepository.findById(bookingDto.getItemId()).isEmpty()) {
-            throw new NotFoundException("Предмет с id " + bookingDto.getItemId() + " не существует.");
+            throw new NotFoundException(String.format("Предмет с id %d не существует.", bookingDto.getItemId()));
         }
         Booking booking = new Booking();
         booking.setStart(bookingDto.getStart());

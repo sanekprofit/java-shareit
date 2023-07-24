@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     public User getUser(Long userId) {
         Optional<User> user = repository.findById(userId);
         if (user.isEmpty()) {
-            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
+            throw new NotFoundException(String.format("Пользователь с id %d не найден.", userId));
         }
         return user.get();
     }
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
                 user.setName(userOld.get().getName());
             }
         } else {
-            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
+            throw new NotFoundException(String.format("Пользователь с id %d не найден.", userId));
         }
         return repository.save(user);
     }
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             repository.deleteById(userId);
         } else {
-            throw new NotFoundException("Пользователь с id " + userId + " не найден.");
+            throw new NotFoundException(String.format("Пользователь с id %d не найден.", userId));
         }
         return HttpStatus.OK;
     }
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     private void validationCheckPatch(User user, Long userId) {
         List<User> usersDuplicateEmail = repository.findByEmailContainingIgnoreCaseAndIdNot(user.getEmail(), userId);
         if (!usersDuplicateEmail.isEmpty()) {
-            throw new DuplicateException("Пользователь с почтой " + user.getEmail() + " уже существует.");
+            throw new DuplicateException(String.format("Пользователь с почтой %s уже существует.", user.getEmail()));
         }
     }
 }

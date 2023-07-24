@@ -58,10 +58,10 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = bookingRepository.findFirstByBooker_IdAndEndAfterOrderByStartDesc(
                 userId, LocalDateTime.now());
         if (booking == null) {
-            throw new NotFoundException("Предмет с id " + itemId + " никогда не брали в аренду.");
+            throw new NotFoundException(String.format("Предмет с id %d никогда не брали в аренду.", itemId));
         }
         if (booking.getBooker().getId() != userId) {
-            throw new ValidationException("Неправильный id юзера: " + userId);
+            throw new ValidationException(String.format("Неправильный id юзера: %d", userId));
         }
         if (!booking.getStatus().equals(BookingStatus.APPROVED)) {
             throw new ValidationException("Статус аренды должен быть подтверждённым.");
@@ -78,10 +78,10 @@ public class ItemServiceImpl implements ItemService {
         validationCheckPatch(userId);
         userService.getUser(userId);
         if (repository.findById(itemId).isEmpty()) {
-            throw new NotFoundException("Предмет с id " + itemId + " не существует.");
+            throw new NotFoundException(String.format("Предмет с id %d не существует.", itemId));
         }
         if (getItem(userId, itemId).getOwner().getId() != userId) {
-            throw new NotFoundException("Пользователь с id " + userId + " не создавал такой товар.");
+            throw new NotFoundException(String.format("Пользователь с id %d не создавал такой товар.", userId));
         }
         Item itemUpdated = repository.findById(itemId).get();
         if (itemCurrent.getName() != null) {
@@ -100,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getItem(Long userId, Long itemId) {
         userService.getUser(userId);
         if (repository.findById(itemId).isEmpty()) {
-            throw new NotFoundException("Предмет с id " + itemId + " не существует.");
+            throw new NotFoundException(String.format("Предмет с id %d не существует.", itemId));
         }
         List<Comment> comments = commentRepository.findAllByItem_Id(itemId);
         List<CommentDto> commentDto = new ArrayList<>();
@@ -134,10 +134,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getItems(Long userId, Integer from, Integer size) {
         if (from < 0) {
-            throw new ValidationException("Параметр from не может быть " + from);
+            throw new ValidationException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new ValidationException("Параметр size не может быть " + size);
+            throw new ValidationException(String.format("Параметр size не может быть %d", from));
         }
         int fromPage = from / size;
         PageRequest pageRequest = PageRequest.of(fromPage, size);
@@ -206,10 +206,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getItemSearch(Long userId, String text, Integer from, Integer size) {
         if (from < 0) {
-            throw new ValidationException("Параметр from не может быть " + from);
+            throw new ValidationException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new ValidationException("Параметр size не может быть " + size);
+            throw new ValidationException(String.format("Параметр size не может быть %d", from));
         }
         int fromPage = from / size;
         PageRequest pageRequest = PageRequest.of(fromPage, size);

@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User getUser(@PathVariable("userId") Long userId) {
-        log.info("Получен запрос на получение пользователя с id: {}", userId);
+        log.info(String.format("Получен запрос на получение пользователя с id: %d", userId));
         return userService.getUser(userId);
     }
 
@@ -32,20 +32,20 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody UserDto user) {
-        log.info("Получен запрос на создание пользователя: {}", user);
+        log.info(String.format("Получен запрос на создание пользователя: %s", user));
         return userService.createUser(user);
     }
 
     @PatchMapping("/{userId}")
     public User patchUser(@RequestBody User user,
                           @PathVariable("userId") Long userId) {
-        log.info("Получен запрос на обновление пользователя: {}", user);
+        log.info(String.format("Получен запрос на обновление пользователя: %s", user));
         return userService.patchUser(user, userId);
     }
 
     @DeleteMapping("/{userId}")
     public HttpStatus deleteUser(@PathVariable("userId") Long userId) {
-        log.info("Получен запрос на удаление пользователя: {}", userId);
+        log.info(String.format("Получен запрос на удаление пользователя: %d", userId));
         return userService.deleteUser(userId);
     }
 }

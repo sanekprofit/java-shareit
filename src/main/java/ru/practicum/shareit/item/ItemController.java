@@ -23,7 +23,7 @@ public class ItemController {
     @PostMapping
     public ItemShort createItem(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") Long userId,
                            @RequestBody ItemShort itemShort) {
-        log.info("Получен запрос на создание товара: {}", itemShort);
+        log.info(String.format("Получен запрос на создание товара: %s", itemShort));
         return itemService.createItem(userId, itemShort);
     }
 
@@ -32,7 +32,7 @@ public class ItemController {
                                         Long userId,
                                  @PathVariable("itemId") Long itemId,
                                  @RequestBody CommentShort commentShort) {
-        log.info("Получен запрос на добавление комментария от юзера " + userId + " на предмет с id: " + itemId);
+        log.info(String.format("Получен запрос на добавление комментария от юзера %d на предмет с id: %d", userId, itemId));
         return itemService.createComment(userId, itemId, commentShort);
     }
 
@@ -40,14 +40,14 @@ public class ItemController {
     public Item updateItem(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0") Long userId,
                            @RequestBody Item item,
                            @PathVariable("itemId") Long itemId) {
-        log.info("Получен запрос на обновление товара: {}", item);
+        log.info(String.format("Получен запрос на обновление товара: %s", item));
         return itemService.updateItem(userId, item, itemId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                            @PathVariable("itemId") Long itemId) {
-        log.info("Получен запрос на получение товара: {}", itemId);
+        log.info(String.format("Получен запрос на получение товара: %s", itemId));
         return itemService.getItem(userId, itemId);
     }
 
@@ -64,7 +64,7 @@ public class ItemController {
                               @RequestParam("text") String text,
                                     @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                     @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
-        log.info("Получен запрос на получение товара по поиску: {}", text);
+        log.info(String.format("Получен запрос на получение товара по поиску: %s", text));
         return itemService.getItemSearch(userId, text, from, size);
     }
 }

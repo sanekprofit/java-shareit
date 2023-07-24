@@ -22,7 +22,7 @@ public class BookingController {
     public Booking createBooking(@RequestBody BookingDto bookingDto,
                                  @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0")
                                     Long userId) {
-        log.info("Получен запрос на добавление бронировавния: {}", bookingDto);
+        log.info(String.format("Получен запрос на добавление бронировавния: %s", bookingDto));
         return bookingService.createBooking(bookingDto, userId);
     }
 
@@ -50,7 +50,7 @@ public class BookingController {
                                      String state,
                                      @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                      @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
-        log.info("Получен запрос на получение списка аренд пользователя с id " + userId + ", State: " + state);
+        log.info(String.format("Получен запрос на получение списка аренд пользователя с id %d State: %s", userId, state));
         return bookingService.getBookings(userId, state, from, size);
     }
 
@@ -61,7 +61,7 @@ public class BookingController {
                                           String state,
                                           @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                           @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
-        log.info("Получен запрос на получение списка аренд владельца с id " + userId + ", State: " + state);
+        log.info(String.format("Получен запрос на получение списка аренд владельца с id %d State: %s", userId, state));
         return bookingService.getBookingsOwner(userId, state, from, size);
     }
 }
