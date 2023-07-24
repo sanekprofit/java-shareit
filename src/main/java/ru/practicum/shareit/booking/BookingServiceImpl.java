@@ -27,7 +27,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking createBooking(BookingDto bookingDto, Long userId) {
-        checkUser(userId);
+        userService.getUser(userId);
         if (bookingDto.getItemId() == userId) {
             throw new NotFoundException("Нельзя взять в аренду свой же предмет.");
         }
@@ -58,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking getBooking(Long userId, Long bookingId) {
-        checkUser(userId);
+        userService.getUser(userId);
         bookingUserCheck(userId, bookingId);
         return repository.findById(bookingId).get();
     }
@@ -71,7 +71,7 @@ public class BookingServiceImpl implements BookingService {
         if (size <= 0) {
             throw new ValidationException("Параметр size не может быть " + size);
         }
-        checkUser(userId);
+        userService.getUser(userId);
         List<Booking> bookings;
         int fromPage = from / size;
         PageRequest pageRequest = PageRequest.of(fromPage, size);
@@ -109,7 +109,7 @@ public class BookingServiceImpl implements BookingService {
         if (size <= 0) {
             throw new ValidationException("Параметр size не может быть " + size);
         }
-        checkUser(userId);
+        userService.getUser(userId);
         List<Booking> bookings;
         int fromPage = from / size;
         PageRequest pageRequest = PageRequest.of(fromPage, size);
@@ -160,12 +160,6 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = repository.findById(bookingId).get();
         if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
             throw new NotFoundException("Неправильный id пользователя: " + userId);
-        }
-    }
-
-    private void checkUser(Long userId) {
-        if (userService.getUser(userId) == null) {
-            throw new NotFoundException("Пользователя с id " + userId + " не существует.");
         }
     }
 

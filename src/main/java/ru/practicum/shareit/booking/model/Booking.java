@@ -33,4 +33,9 @@ public class Booking {
     private Item item;
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.WAITING;
+
+    public Booking(LocalDateTime start, LocalDateTime end) {
+        this.start = start;
+        this.end = end;
+    }
 }

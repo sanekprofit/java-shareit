@@ -40,9 +40,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemShort createItem(Long userId, ItemShort itemShort) {
         validationCheck(userId, itemShort);
-        if (userService.getUser(userId) == null) {
-            throw new NotFoundException("Пользователя с id " + userId + " не существует.");
-        }
+        userService.getUser(userId);
         Item item = ItemMapper.toItem(itemShort);
         item.setOwner(userService.getUser(userId));
         ItemRequest itemRequest = requestRepository.findFirstById(itemShort.getRequestId());
@@ -78,14 +76,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item updateItem(Long userId, Item itemCurrent, Long itemId) {
         validationCheckPatch(userId);
-        if (userService.getUser(userId) == null) {
-            throw new NotFoundException("Пользователя с id " + userId + " не существует.");
+        userService.getUser(userId);
+        if (repository.findById(itemId).isEmpty()) {
+            throw new NotFoundException("Предмет с id " + itemId + " не существует.");
         }
         if (getItem(userId, itemId).getOwner().getId() != userId) {
             throw new NotFoundException("Пользователь с id " + userId + " не создавал такой товар.");
-        }
-        if (repository.findById(itemId).isEmpty()) {
-            throw new NotFoundException("Предмет с id " + itemId + " не существует.");
         }
         Item itemUpdated = repository.findById(itemId).get();
         if (itemCurrent.getName() != null) {
@@ -102,9 +98,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItem(Long userId, Long itemId) {
-        if (userService.getUser(userId) == null) {
-            throw new NotFoundException("Пользователя с id " + userId + " не существует.");
-        }
+        userService.getUser(userId);
         if (repository.findById(itemId).isEmpty()) {
             throw new NotFoundException("Предмет с id " + itemId + " не существует.");
         }

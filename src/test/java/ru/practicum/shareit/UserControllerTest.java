@@ -44,7 +44,7 @@ public class UserControllerTest {
 
     @Test
     void saveUserTest(@Autowired MockMvc mvc) throws Exception {
-        User user = new User( "name", "email@email.com");
+        User user = new User("name", "email@email.com");
         when(userService.createUser(any()))
                 .thenReturn(user);
 

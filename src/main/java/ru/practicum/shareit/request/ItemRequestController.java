@@ -26,7 +26,7 @@ public class ItemRequestController {
         return service.createItemRequest(userId, itemRequestShort);
     }
 
-    @GetMapping()
+    @GetMapping
     public List<ItemRequestDto> getItemRequestsOwn(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0")
                                                     Long userId) {
         log.info("Получен запрос на получение своих запросов и ответов на них. userId: {}", userId);
