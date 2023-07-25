@@ -2,7 +2,7 @@ version: '3.8'
 services:
   gateway:
     image: gateway
-    build: gateway
+    build: gateway/
     container_name: shareit-gateway
     network_mode: host
     ports:

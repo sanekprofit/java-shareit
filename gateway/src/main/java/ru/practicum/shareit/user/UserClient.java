@@ -29,7 +29,7 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getUser(long userId) {
-        return get("/", userId);
+        return get("/" + userId);
     }
 
     public ResponseEntity<Object> getUsers() {
@@ -37,10 +37,10 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> patchUser(Long userId, UserDto userDto) {
-        return patch("/", userId, userDto);
+        return patch("/" + userId, userDto);
     }
 
     public ResponseEntity<Object> deleteUser(Long userId) {
-        return delete("/", userId);
+        return delete("/" + userId);
     }
 }

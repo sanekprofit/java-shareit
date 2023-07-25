@@ -30,7 +30,7 @@ public class BookingController {
     public Booking updateBookingStatus(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0")
                                      Long userId,
                                  @PathVariable("bookingId") Long bookingId,
-                                 @RequestParam(name = "approved") Boolean approved) {
+                                 @RequestParam Boolean approved) {
         log.info("Получен запрос на обновление статуса аренды.");
         return bookingService.updateBookingStatus(userId, bookingId, approved);
     }
