@@ -2,7 +2,7 @@ version: '3.8'
 services:
   gateway:
     image: gateway
-    build: ./gateway
+    build: gateway/
     container_name: shareit-gateway
     ports:
       - "8080:8080"
@@ -12,7 +12,7 @@ services:
       - SHEREIT_SERVER_URL=http:/server:9090
 
   server:
-    build: ./server
+    build: server/
     image: server
     container_name: shareit-server
     ports:
