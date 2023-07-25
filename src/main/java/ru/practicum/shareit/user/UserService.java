@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.http.HttpStatus;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public interface UserService {
 
     List<User> getUsers();
 
-    User createUser(User user);
+    User createUser(UserDto user);
 
     User patchUser(User user, Long userId);
 

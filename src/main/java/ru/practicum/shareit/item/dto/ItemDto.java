@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -8,6 +10,7 @@ import ru.practicum.shareit.user.User;
 import java.util.List;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
     private long id;
     private String name;
@@ -64,6 +67,12 @@ public class ItemDto {
         this.lastBooking = null;
         this.nextBooking = null;
         this.comments = comments;
+    }
+
+    public ItemDto(String name, String description, Boolean available) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
     }
 
     @Data
