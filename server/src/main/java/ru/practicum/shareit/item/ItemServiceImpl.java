@@ -133,12 +133,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItems(Long userId, Integer from, Integer size) {
-        if (from < 0) {
-            throw new ValidationException(String.format("Параметр from не может быть %d", from));
-        }
-        if (size <= 0) {
-            throw new ValidationException(String.format("Параметр size не может быть %d", from));
-        }
         int fromPage = from / size;
         PageRequest pageRequest = PageRequest.of(fromPage, size);
         List<ItemDto> itemDtoList = new ArrayList<>();

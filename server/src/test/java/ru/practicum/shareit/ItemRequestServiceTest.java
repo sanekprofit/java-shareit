@@ -148,22 +148,6 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void getItemRequestsWithoutFromThrowValidationExceptionTest() {
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(user));
-
-        assertThrows(ValidationException.class, () -> service.getItemRequests(1L, -1, 20));
-    }
-
-    @Test
-    void getItemRequestsWithoutSizeThrowValidationExceptionTest() {
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(user));
-
-        assertThrows(ValidationException.class, () -> service.getItemRequests(1L, 0, -1));
-    }
-
-    @Test
     void getItemRequestsTest() {
         itemRequest.setId(1L);
         itemRequest.setDescription("description");

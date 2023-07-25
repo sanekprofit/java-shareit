@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.exception.UnsupportedStatusException;
 
 @Controller
 @RequestMapping(path = "/bookings")
@@ -29,7 +30,7 @@ public class BookingController {
             throw new IllegalArgumentException("Параметр size не может быть " + size);
         }
         BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new UnsupportedStatusException("Unknown state: " + stateParam));
         log.info(String.format("Get booking with state %s, userId=%d, from=%d, size=%d", stateParam, userId, from, size));
         return bookingClient.getBookings(userId, stateParam, from, size);
     }
@@ -47,7 +48,7 @@ public class BookingController {
             throw new IllegalArgumentException("Параметр size не может быть " + size);
         }
         BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new UnsupportedStatusException("Unknown state: " + stateParam));
         log.info(String.format("Получен запрос на получение списка аренд владельца с id %d State: %s", userId, stateParam));
         return bookingClient.getBookingsOwner(userId, stateParam, from, size);
     }

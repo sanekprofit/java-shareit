@@ -62,12 +62,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getItemRequests(Long userId, Integer from, Integer size) {
         userService.getUser(userId);
-        if (from < 0) {
-            throw new ValidationException("Параметр from не может быть " + from);
-        }
-        if (size <= 0) {
-            throw new ValidationException("Параметр size не может быть " + size);
-        }
         List<ItemRequestDto> itemRequestDtos = new ArrayList<>();
         int fromPage = from / size;
         PageRequest pageRequest = PageRequest.of(fromPage, size);

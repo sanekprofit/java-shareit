@@ -65,12 +65,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getBookings(Long userId, String state, Integer from, Integer size) {
-        if (from < 0) {
-            throw new ValidationException(String.format("Параметр from не может быть %d", from));
-        }
-        if (size <= 0) {
-            throw new ValidationException(String.format("Параметр size не может быть %d", from));
-        }
         userService.getUser(userId);
         List<Booking> bookings;
         int fromPage = from / size;
@@ -103,12 +97,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getBookingsOwner(Long userId, String state, Integer from, Integer size) {
-        if (from < 0) {
-            throw new ValidationException(String.format("Параметр from не может быть %d", from));
-        }
-        if (size <= 0) {
-            throw new ValidationException(String.format("Параметр size не может быть %d", from));
-        }
         userService.getUser(userId);
         List<Booking> bookings;
         int fromPage = from / size;

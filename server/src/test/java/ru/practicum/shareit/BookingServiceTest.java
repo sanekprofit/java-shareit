@@ -229,16 +229,6 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getBookingsThrowBadFromException() {
-        assertThrows(ValidationException.class, () -> service.getBookings(1L, "ALL", -1, 20));
-    }
-
-    @Test
-    void getBookingsThrowBadSizeException() {
-        assertThrows(ValidationException.class, () -> service.getBookings(1L, "ALL", 0, -1));
-    }
-
-    @Test
     void getBookingsAllTest() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(user));

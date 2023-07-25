@@ -50,6 +50,12 @@ public class ItemController {
     public ResponseEntity<Object> getItems(@RequestHeader("X-Sharer-User-Id") long userId,
                                   @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                   @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
+        if (from < 0) {
+            throw new IllegalArgumentException("Параметр from не может быть " + from);
+        }
+        if (size <= 0) {
+            throw new IllegalArgumentException("Параметр size не может быть " + size);
+        }
         log.info("Получен запрос на получение списка товаров");
         return itemClient.getItems(userId, from, size);
     }
@@ -59,6 +65,12 @@ public class ItemController {
                                     @RequestParam("text") String text,
                                     @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                     @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
+        if (from < 0) {
+            throw new IllegalArgumentException("Параметр from не может быть " + from);
+        }
+        if (size <= 0) {
+            throw new IllegalArgumentException("Параметр size не может быть " + size);
+        }
         log.info(String.format("Получен запрос на получение товара по поиску: %s", text));
         return itemClient.getItemSearch(userId, text, from, size);
     }

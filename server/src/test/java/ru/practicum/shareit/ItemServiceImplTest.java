@@ -423,16 +423,6 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void getItemsWithoutFromThrowValidationExceptionTest() {
-        assertThrows(ValidationException.class, () -> service.getItems(99L, -1, 2));
-    }
-
-    @Test
-    void getItemsWithoutSizeThrowValidationExceptionTest() {
-        assertThrows(ValidationException.class, () -> service.getItems(99L, 0, -1));
-    }
-
-    @Test
     void getItemsTest() {
         item.setOwner(user);
         when(userRepository.findById(1L))
