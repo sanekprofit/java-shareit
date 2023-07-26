@@ -16,6 +16,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> createUser(@RequestBody UserDto user) {
+        if (user.toString().contains("email=null") || !user.getEmail().contains("@")) {
+            throw new IllegalArgumentException("Почта должна содержать символ '@' или быть не пустой.");
+        }
         log.info(String.format("Получен запрос на создание пользователя: %s", user));
         return userClient.createUser(user);
     }
