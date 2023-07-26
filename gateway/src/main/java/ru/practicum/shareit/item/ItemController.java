@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.BadParamException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -51,10 +52,10 @@ public class ItemController {
                                   @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                   @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
         if (from < 0) {
-            throw new IllegalArgumentException("Параметр from не может быть " + from);
+            throw new BadParamException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new IllegalArgumentException("Параметр size не может быть " + size);
+            throw new BadParamException(String.format("Параметр size не может быть %d", size));
         }
         log.info("Получен запрос на получение списка товаров");
         return itemClient.getItems(userId, from, size);
@@ -66,10 +67,10 @@ public class ItemController {
                                     @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                     @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
         if (from < 0) {
-            throw new IllegalArgumentException("Параметр from не может быть " + from);
+            throw new BadParamException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new IllegalArgumentException("Параметр size не может быть " + size);
+            throw new BadParamException(String.format("Параметр size не может быть %d", size));
         }
         log.info(String.format("Получен запрос на получение товара по поиску: %s", text));
         return itemClient.getItemSearch(userId, text, from, size);

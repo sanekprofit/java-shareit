@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.exception.BadParamException;
 import ru.practicum.shareit.exception.UnsupportedStatusException;
 
 @Controller
@@ -24,10 +25,10 @@ public class BookingController {
                                               @RequestParam(name = "from", defaultValue = "0") Integer from,
                                               @RequestParam(name = "size", defaultValue = "20") Integer size) {
         if (from < 0) {
-            throw new IllegalArgumentException("Параметр from не может быть " + from);
+            throw new BadParamException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new IllegalArgumentException("Параметр size не может быть " + size);
+            throw new BadParamException(String.format("Параметр size не может быть %d", size));
         }
         BookingState.from(stateParam)
                 .orElseThrow(() -> new UnsupportedStatusException("Unknown state: " + stateParam));
@@ -42,10 +43,10 @@ public class BookingController {
                                                    @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                                    @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
         if (from < 0) {
-            throw new IllegalArgumentException("Параметр from не может быть " + from);
+            throw new BadParamException(String.format("Параметр from не может быть %d", from));
         }
         if (size <= 0) {
-            throw new IllegalArgumentException("Параметр size не может быть " + size);
+            throw new BadParamException(String.format("Параметр size не может быть %d", size));
         }
         BookingState.from(stateParam)
                 .orElseThrow(() -> new UnsupportedStatusException("Unknown state: " + stateParam));

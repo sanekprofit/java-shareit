@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookItemRequestDto {
-    private long itemId;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    long itemId;
+    LocalDateTime start;
+    LocalDateTime end;
 }

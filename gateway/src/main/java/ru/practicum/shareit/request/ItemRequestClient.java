@@ -39,10 +39,10 @@ public class ItemRequestClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("/all?from={from}&size={size}", userId, parameters);
+        return get(String.format("/all?from=%d&size=%d", from, size), userId, parameters);
     }
 
     public ResponseEntity<Object> getItemRequest(long userId, Long requestId) {
-        return get("/" + requestId, userId);
+        return get(String.format("/%d", requestId), userId);
     }
 }

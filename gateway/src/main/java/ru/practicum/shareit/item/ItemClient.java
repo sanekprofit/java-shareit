@@ -32,11 +32,11 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> createComment(long userId, Long itemId, CommentDto commentDto) {
-        return post("/" + itemId + "/comment", userId, commentDto);
+        return post(String.format("/%d/comment", itemId), userId, commentDto);
     }
 
     public ResponseEntity<Object> updateItem(long userId, ItemDto itemDto, Long itemId) {
-        return patch("/" + itemId, userId, itemDto);
+        return patch(String.format("/%d", itemId), userId, itemDto);
     }
 
     public ResponseEntity<Object> getItem(long userId, Long itemId) {
@@ -48,7 +48,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("?from={from}&size={size}", userId, parameters);
+        return get(String.format("?from=%d&size=%d", from, size), userId, parameters);
     }
 
     public ResponseEntity<Object> getItemSearch(long userId, String text, Integer from, Integer size) {
@@ -57,6 +57,6 @@ public class ItemClient extends BaseClient {
                 "size", size,
                 "text", text
         );
-        return get("/search?text={text}&from={from}&size={size}", userId, parameters);
+        return get(String.format("/search?text=%s&from=%d&size=%d", text, from, size), userId, parameters);
     }
 }

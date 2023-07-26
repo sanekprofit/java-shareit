@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
-    private String name;
-    private String description;
-    private Boolean available;
-    private long requestId;
+    String name;
+    String description;
+    Boolean available;
+    long requestId;
 }
