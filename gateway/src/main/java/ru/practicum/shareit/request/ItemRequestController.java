@@ -32,8 +32,8 @@ public class ItemRequestController {
     @GetMapping("/all")
     public ResponseEntity<Object> getItemRequests(@RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "0")
                                                 long userId,
-                                                @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-                                                @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
+                                                @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                @RequestParam(name = "size", defaultValue = "20") Integer size) {
         if (from < 0) {
             throw new IllegalArgumentException("Параметр from не может быть " + from);
         }
