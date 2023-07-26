@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserDto userDto) {
+        validationCheck(userDto);
         User user = UserMapper.toUser(userDto);
         return repository.save(user);
     }
@@ -66,6 +68,12 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException(String.format("Пользователь с id %d не найден.", userId));
         }
         return HttpStatus.OK;
+    }
+
+    private void validationCheck(UserDto userDto) {
+        if (userDto.toString().contains("email=null") || !userDto.getEmail().contains("@")) {
+            throw new ValidationException("Почта должна содержать символ '@' или быть не пустой.");
+        }
     }
 
     private void validationCheckPatch(User user, Long userId) {
