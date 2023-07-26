@@ -2,17 +2,17 @@ version: '3.8'
 services:
   gateway:
     image: gateway
-    build: gateway/
+    build: ./gateway
     container_name: shareit-gateway
     ports:
       - "8080:8080"
     depends_on:
       - server
     environment:
-      - SHEREIT_SERVER_URL=http:/server:9090
+      - SHEREIT_SERVER_URL=http://server:9090
 
   server:
-    build: server/
+    build: ./server
     image: server
     container_name: shareit-server
     ports:
@@ -23,6 +23,11 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9090/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   db:
     image: postgres:latest
