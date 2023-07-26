@@ -65,7 +65,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequestDto> itemRequestDtos = new ArrayList<>();
         int fromPage = from / size;
         PageRequest pageRequest = PageRequest.of(fromPage, size);
-        List<ItemRequest> requestsIter = repository.findAllByRequester_IdNotLikeOrderByCreatedDesc(userId, pageRequest);
+        List<ItemRequest> requestsIter = repository.findAllByRequester_IdNotOrderByCreatedDesc(userId, pageRequest);
         for (ItemRequest itemRequest : requestsIter) {
             List<Item> items = itemRepository.findAllByRequest_Id(itemRequest.getId());
             if (!items.isEmpty()) {

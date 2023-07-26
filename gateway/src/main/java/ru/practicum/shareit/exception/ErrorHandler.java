@@ -12,4 +12,10 @@ public class ErrorHandler {
     public ErrorResponse handleException(final UnsupportedStatusException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleException(final BadParamException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

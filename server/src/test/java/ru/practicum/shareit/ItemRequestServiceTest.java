@@ -157,7 +157,7 @@ public class ItemRequestServiceTest {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
 
-        when(repository.findAllByRequester_IdNotLikeOrderByCreatedDesc(anyLong(), any()))
+        when(repository.findAllByRequester_IdNotOrderByCreatedDesc(anyLong(), any()))
                 .thenReturn(List.of(itemRequest));
 
         when(itemRepository.findAllByRequest_Id(anyLong()))
@@ -182,7 +182,7 @@ public class ItemRequestServiceTest {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
 
-        when(repository.findAllByRequester_IdNotLikeOrderByCreatedDesc(anyLong(), any()))
+        when(repository.findAllByRequester_IdNotOrderByCreatedDesc(anyLong(), any()))
                 .thenReturn(List.of(itemRequest));
 
         List<ItemRequestDto> request = service.getItemRequests(1L, 0, 20);
@@ -200,7 +200,7 @@ public class ItemRequestServiceTest {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
 
-        when(repository.findAllByRequester_IdNotLikeOrderByCreatedDesc(anyLong(), any()))
+        when(repository.findAllByRequester_IdNotOrderByCreatedDesc(anyLong(), any()))
                 .thenReturn(List.of());
 
         List<ItemRequestDto> request = service.getItemRequests(1L, 0, 20);

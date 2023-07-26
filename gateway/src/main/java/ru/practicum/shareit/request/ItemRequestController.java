@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.BadParamException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 @Controller
@@ -35,10 +36,10 @@ public class ItemRequestController {
                                                 @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                                 @RequestParam(name = "size", required = false, defaultValue = "20") Integer size) {
         if (from < 0) {
-            throw new IllegalArgumentException("Параметр from не может быть " + from);
+            throw new BadParamException("Параметр from не может быть " + from);
         }
         if (size <= 0) {
-            throw new IllegalArgumentException("Параметр size не может быть " + size);
+            throw new BadParamException("Параметр size не может быть " + size);
         }
         log.info("Получен запрос на получение всех запросов. from & size = [ " + from + " | " + size + " ]");
         return requestClient.getItemRequests(userId, from, size);
