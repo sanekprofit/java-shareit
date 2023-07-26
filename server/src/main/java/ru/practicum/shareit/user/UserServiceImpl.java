@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validationCheckPatch(User user, Long userId) {
-        List<User> usersDuplicateEmail = repository.findByEmailContainingIgnoreCaseAndIdNot(user.getEmail(), userId);
+        List<User> usersDuplicateEmail = repository.findByEmailContainingAndIdNot(user.getEmail(), userId);
         if (!usersDuplicateEmail.isEmpty()) {
             throw new DuplicateException(String.format("Пользователь с почтой %s уже существует.", user.getEmail()));
         }
